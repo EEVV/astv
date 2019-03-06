@@ -18,5 +18,14 @@ button {
 }
 text {
     font-family: "Fira Mono";
-    user-select: none;
+    pointer-events: none;
+}
+rect {
+    pointer-events: none;
+}
+line {
+    pointer-events: none;
+}
+g {
+    pointer-events: none;
 }

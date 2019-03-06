@@ -1,7 +1,10 @@
 const svg = SVG("svg");
 const svg_g = svg.group();
 const textarea = document.getElementById("textarea");
-const button = document.getElementById("button");
+
+// todo fix this
+// make it move to center
+svg_g.move(300, 50);
 
 var m_x = null;
 var m_y = null;
@@ -39,7 +42,7 @@ svg.mousemove(function(event) {
 })
 
 svg.on("wheel", function(event) {
-    console.log(event);
+    // todo zoom-in feature
 })
 
 // begin parsing
@@ -68,7 +71,7 @@ function getNode(source) {
         let m = getNode(source);
         source = m[1];
         if (source.charAt(0) != ')') {
-            alert("expected ')'");
+            return null;
         }
         source = source.substr(1);
         return [m[0], source]
@@ -83,6 +86,9 @@ function getNode(source) {
                 m = getNode(source);
             } else {
                 m = getIden(source);
+            }
+            if (m == null) {
+                return null;
             }
             source = m[1];
             nodes.push(m[0]);
@@ -118,7 +124,6 @@ function svgNode(svg, node) {
     nodes_set.each(function(i, children) {
         this.move(this.x() + offset, this.y() + Math.log2(nodes.length) * 25 + 25);
         let this_bbox = this.bbox();
-        console.log(this_bbox);
         group.line(0, 0, this.x(), this.y()).stroke({width: 1}).back();
     });
     group.rect(name_bbox.w + 5, name_bbox.h).center(0, 0).attr({fill: "#fff"});
@@ -126,10 +131,12 @@ function svgNode(svg, node) {
     return group;
 }
 
-button.onclick = function() {
+textarea.oninput = function() {
     text = textarea.value;
-    let multiple = getNode(text);
+    let m = getNode(text);
+    if (m == null) {
+        return;
+    }
     svg_g.clear();
-    svgNode(svg_g, multiple[0]);
-    svg_g.move(300, 50);
+    svgNode(svg_g, m[0]);
 }
